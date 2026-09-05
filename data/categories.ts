@@ -1,0 +1,111 @@
+import { Category } from "@/lib/types";
+
+export const categories: Category[] = [
+  {
+    id: "1",
+    name: "Electronics",
+    slug: "electronics",
+    icon: "Laptop",
+    description:
+      "Coupons and deals on gadgets, audio gear, keyboards, and consumer electronics.",
+  },
+  {
+    id: "2",
+    name: "Fashion",
+    slug: "fashion",
+    icon: "Shirt",
+    description: "Discounts on clothing, footwear, and everyday fashion.",
+  },
+  {
+    id: "3",
+    name: "Beauty",
+    slug: "beauty",
+    icon: "Sparkles",
+    description: "Promo codes for skincare, cosmetics, and beauty essentials.",
+  },
+  {
+    id: "4",
+    name: "Home & Garden",
+    slug: "home-garden",
+    icon: "Home",
+    description: "Deals on furniture, decor, and home improvement.",
+  },
+  {
+    id: "5",
+    name: "Sports",
+    slug: "sports",
+    icon: "Trophy",
+    description: "Savings on sporting goods and athletic gear.",
+  },
+  {
+    id: "6",
+    name: "Automotive",
+    slug: "automotive",
+    icon: "Car",
+    description:
+      "Coupons for car accessories, diagnostic tools, and auto electronics.",
+  },
+  {
+    id: "7",
+    name: "Travel",
+    slug: "travel",
+    icon: "Plane",
+    description: "Deals on flights, hotels, and travel gear.",
+  },
+  {
+    id: "8",
+    name: "Software",
+    slug: "software",
+    icon: "Code2",
+    description: "Discount codes for apps, SaaS, and digital tools.",
+  },
+  {
+    id: "9",
+    name: "Accessories",
+    slug: "accessories",
+    icon: "Watch",
+    description: "Deals on bags, watches, and everyday accessories.",
+  },
+  {
+    id: "10",
+    name: "Fitness",
+    slug: "fitness",
+    icon: "Dumbbell",
+    description: "Coupons for fitness equipment and wearables.",
+  },
+  {
+    id: "11",
+    name: "Outdoor",
+    slug: "outdoor",
+    icon: "Mountain",
+    description: "Savings on outdoor, camping, and e-mobility gear.",
+  },
+  {
+    id: "12",
+    name: "Kids",
+    slug: "kids",
+    icon: "Baby",
+    description: "Deals on toys, gear, and products for kids.",
+  },
+  {
+    id: "13",
+    name: "Pet",
+    slug: "pet",
+    icon: "PawPrint",
+    description: "Coupons for pet food, toys, and accessories.",
+  },
+  {
+    id: "14",
+    name: "Jewelry",
+    slug: "jewelry",
+    icon: "Gem",
+    description: "Discounts on rings, necklaces, and fine jewelry.",
+  },
+  {
+    id: "15",
+    name: "Tools",
+    slug: "tools",
+    icon: "Wrench",
+    description: "Deals on power tools and hardware equipment.",
+  },
+];
