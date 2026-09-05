@@ -267,12 +267,22 @@ NEXT_PUBLIC_SITE_URL=https://savemorewithcoupons.com
 Biến này dùng để build canonical URL, Open Graph và sitemap — chỉ cần set
 khi domain thực tế khác với mặc định trong code.
 
-### 8.3. Cài đặt & build trên server (cPanel "Setup Node.js App")
+### 8.3. Cài đặt trên server (cPanel "Setup Node.js App")
 
 cPanel chạy Node.js qua Phusion Passenger — **không** gọi `npm run start`
 trực tiếp, mà chạy thẳng 1 file JS làm entry point. Vì vậy project có sẵn
 file `server.js` ở thư mục gốc, dùng Next.js custom server API để mở HTTP
 server đúng theo cách Passenger cần.
+
+**Quan trọng: KHÔNG chạy `npm run build` trên server.** Hosting shared
+cPanel (CloudLinux LVE) giới hạn số tiến trình/luồng một tài khoản được tạo,
+trong khi `next build` cần mở worker phụ để build song song — dù thử cấu
+hình `cpus: 1`, tắt `webpackBuildWorker`, hay chuyển sang chế độ thread, đều
+vẫn thất bại (`spawn EAGAIN` / `kill EPERM` / lỗi nội bộ Next.js) trên loại
+hosting này. Giải pháp: **build sẵn ở máy dev, commit luôn thư mục `.next`
+vào Git** (xem `.gitignore` — chỉ `.next/cache` bị loại vì đó là cache tạm,
+không cần để chạy). Server chỉ cần `git pull` là có sẵn bản build, không
+phải tự build.
 
 Trong "Setup Node.js App" → "Create Application", điền đúng như sau:
 
@@ -285,20 +295,22 @@ Trong "Setup Node.js App" → "Create Application", điền đúng như sau:
 | Application startup file | `server.js` |
 
 Sau khi bấm **Create**, panel sẽ cấp cho bạn lệnh "Enter to the virtual
-environment" — copy lệnh đó chạy trong terminal SSH tại đúng thư mục
+environment" — copy lệnh đó chạy trong Terminal (cPanel) tại đúng thư mục
 Application Root, rồi chạy:
 
 ```bash
 npm install
-npm run build
 ```
 
-Quay lại trang Node.js App trên panel, bấm **RESTART** để app khởi động
-bằng `server.js` (đọc bản build vừa tạo).
+(Chỉ cần `npm install` để có `node_modules` lúc chạy — **không** chạy
+`npm run build`, vì `.next` đã có sẵn từ Git.) Xong quay lại trang Node.js
+App trên panel, bấm **RESTART**.
 
-Nếu không có SSH, dùng nút **"Run NPM Install"** trên panel, sau đó cần SSH
-hoặc terminal tích hợp của panel để chạy `npm run build` (bước build không
-có nút riêng trên hầu hết panel Node.js App).
+Nếu hosting của bạn *không* bị giới hạn tiến trình kiểu này (VPS riêng,
+hoặc CloudLinux LVE rộng rãi hơn), vẫn có thể build trực tiếp trên server
+như bình thường bằng `npm run build` — cấu hình `experimental.cpus: 1` v.v.
+trong `next.config.ts` chỉ khiến build chậm hơn chứ không gây lỗi gì trên
+môi trường không giới hạn.
 
 ### 8.4. Chạy thường trực (process manager)
 
@@ -327,16 +339,26 @@ process này giúp bạn, không cần PM2.
 4. Sau khi domain hoạt động, cập nhật lại `NEXT_PUBLIC_SITE_URL` (mục 8.2)
    đúng với domain HTTPS thật, build lại (`npm run build`) rồi restart app.
 
-### 8.6. Restart sau khi cập nhật coupon/store
+### 8.6. Cập nhật sau khi sửa coupon/store
 
 Vì dữ liệu nằm trong file TypeScript (`/data`) nên **mỗi lần sửa coupon/store
-bạn cần build lại** để thay đổi có hiệu lực trên production:
+cần build lại rồi mới thấy thay đổi trên production**. Theo lý do ở mục 8.3,
+build được thực hiện **ở máy dev** (không phải trên server):
 
 ```bash
-npm run build
-# sau đó restart app trong panel AZDIGI, hoặc:
-pm2 restart save-more-with-coupons
+npm run build        # chạy ở máy dev, tạo lại .next/
+git add -A && git commit -m "Update coupons" && git push
 ```
+
+Sau đó trên server:
+
+```bash
+git pull origin main
+```
+
+rồi restart app trong panel AZDIGI (hoặc `pm2 restart save-more-with-coupons`
+nếu dùng VPS + PM2). Không cần chạy `npm install` lại trừ khi
+`package.json` có thay đổi, và không cần `npm run build` trên server.
 
 ---
 
