@@ -267,26 +267,38 @@ NEXT_PUBLIC_SITE_URL=https://savemorewithcoupons.com
 Biến này dùng để build canonical URL, Open Graph và sitemap — chỉ cần set
 khi domain thực tế khác với mặc định trong code.
 
-### 8.3. Cài đặt & build trên server
+### 8.3. Cài đặt & build trên server (cPanel "Setup Node.js App")
 
-Trong panel "Setup Node.js App" của AZDIGI (DirectAdmin/cPanel):
+cPanel chạy Node.js qua Phusion Passenger — **không** gọi `npm run start`
+trực tiếp, mà chạy thẳng 1 file JS làm entry point. Vì vậy project có sẵn
+file `server.js` ở thư mục gốc, dùng Next.js custom server API để mở HTTP
+server đúng theo cách Passenger cần.
 
-1. Chọn phiên bản **Node.js 18 trở lên** (khuyến nghị Node 20+).
-2. Trỏ **Application Root** vào thư mục chứa project (nơi có `package.json`).
-3. Trỏ **Application Startup File** — với Next.js dùng `npm run start`,
-   không cần chỉ định file JS cụ thể (xem mục 8.4 nếu panel yêu cầu file
-   entry point).
-4. Mở terminal SSH vào thư mục project rồi chạy:
+Trong "Setup Node.js App" → "Create Application", điền đúng như sau:
+
+| Trường | Giá trị |
+|---|---|
+| Node.js version | **20.x** trở lên (không chọn bản mặc định 10.x — Next.js yêu cầu tối thiểu Node 18.18) |
+| Application mode | **Production** |
+| Application root | thư mục đã clone code vào (bước 8.1), vd: `website-coupon` |
+| Application URL | `savemorewithcoupons.com` |
+| Application startup file | `server.js` |
+
+Sau khi bấm **Create**, panel sẽ cấp cho bạn lệnh "Enter to the virtual
+environment" — copy lệnh đó chạy trong terminal SSH tại đúng thư mục
+Application Root, rồi chạy:
 
 ```bash
 npm install
 npm run build
-npm run start
 ```
 
-Nếu dùng panel Node.js App của AZDIGI (không có SSH), dùng nút "Run NPM
-Install" và "Run NPM Script" tương ứng với `build` rồi `start` trong giao
-diện quản lý.
+Quay lại trang Node.js App trên panel, bấm **RESTART** để app khởi động
+bằng `server.js` (đọc bản build vừa tạo).
+
+Nếu không có SSH, dùng nút **"Run NPM Install"** trên panel, sau đó cần SSH
+hoặc terminal tích hợp của panel để chạy `npm run build` (bước build không
+có nút riêng trên hầu hết panel Node.js App).
 
 ### 8.4. Chạy thường trực (process manager)
 
