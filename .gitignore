@@ -2,7 +2,13 @@
 /node_modules
 
 # next.js
-/.next/
+# NOTE: .next/ is intentionally NOT ignored — it's committed pre-built.
+# The production host's shared-hosting process limits (CloudLinux LVE)
+# can't run `next build`'s worker pool, so the build happens locally
+# (or in CI) and the output is pushed as-is. See README "Deploy" section.
+# .next/cache is the local incremental-build cache only — not needed to
+# run the site, and it's large, so it's excluded even though .next isn't.
+/.next/cache/
 /out/
 
 # production

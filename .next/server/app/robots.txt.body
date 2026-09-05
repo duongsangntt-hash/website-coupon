@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /search
+
+Host: https://savemorewithcoupons.com
+Sitemap: https://savemorewithcoupons.com/sitemap.xml

@@ -1,0 +1,23 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/icon.svg/route": "/icon.svg",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/page": "/",
+  "/affiliate-disclosure/page": "/affiliate-disclosure",
+  "/about/page": "/about",
+  "/blog/page": "/blog",
+  "/blog/[slug]/page": "/blog/[slug]",
+  "/contact/page": "/contact",
+  "/categories/page": "/categories",
+  "/categories/[slug]/page": "/categories/[slug]",
+  "/cookie-policy/page": "/cookie-policy",
+  "/coupons/page": "/coupons",
+  "/deals/page": "/deals",
+  "/stores/page": "/stores",
+  "/search/page": "/search",
+  "/privacy-policy/page": "/privacy-policy",
+  "/terms/page": "/terms",
+  "/stores/[slug]/page": "/stores/[slug]",
+  "/opengraph-image/route": "/opengraph-image"
+}
