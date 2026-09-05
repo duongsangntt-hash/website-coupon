@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import ToastProvider from "@/components/ToastProvider";
 import {
   SITE_NAME,
   SITE_TAGLINE,
@@ -78,9 +79,11 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans text-gray-900 antialiased">
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={websiteJsonLd} />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ToastProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

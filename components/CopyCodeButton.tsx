@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Check, Copy, ArrowRight } from "lucide-react";
 import { Coupon } from "@/lib/types";
 import { trackAffiliateClick } from "@/lib/utils";
+import { useToast } from "@/components/ToastProvider";
 
 export default function CopyCodeButton({ coupon }: { coupon: Coupon }) {
   const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
 
   const handleClick = async () => {
     trackAffiliateClick(coupon);
@@ -14,6 +16,7 @@ export default function CopyCodeButton({ coupon }: { coupon: Coupon }) {
       try {
         await navigator.clipboard.writeText(coupon.code);
         setCopied(true);
+        showToast(`Code "${coupon.code}" copied!`);
         window.setTimeout(() => setCopied(false), 2000);
       } catch {
         // Clipboard API unavailable; the code is still visible for manual copy.
