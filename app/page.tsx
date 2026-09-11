@@ -18,6 +18,12 @@ export default function HomePage() {
 
   return (
     <>
+      {/* Impact.com affiliate network site-ownership verification. Their
+          tag uses a non-standard `value` attribute (not `content`), so this
+          is rendered directly instead of through the Metadata API — React 19
+          hoists <meta> tags rendered anywhere in the tree into <head>. */}
+      {/* @ts-expect-error -- `value` is non-standard for <meta>, but it's what Impact.com's crawler checks for */}
+      <meta name="impact-site-verification" value="dfab132a-bcf6-424c-95b6-b337bedea449" />
       <Hero />
       <TrustSection />
 
