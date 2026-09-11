@@ -23,7 +23,7 @@ export default function HomePage() {
           is rendered directly instead of through the Metadata API — React 19
           hoists <meta> tags rendered anywhere in the tree into <head>. */}
       {/* @ts-expect-error -- `value` is non-standard for <meta>, but it's what Impact.com's crawler checks for */}
-      <meta name="impact-site-verification" value="dfab132a-bcf6-424c-95b6-b337bedea449" />
+      <meta name="impact-site-verification" value="23fd8090-ca9c-417f-969d-fa5b37f8727e" />
       <Hero />
       <TrustSection />
 
