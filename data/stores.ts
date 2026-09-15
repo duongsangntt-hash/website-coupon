@@ -195,4 +195,164 @@ export const stores: Store[] = [
     website: "https://aoocci.com",
     featured: true,
   },
+  {
+    id: "20",
+    name: "Viperade",
+    slug: "viperade",
+    logo: "/images/stores/viperade.png",
+    category: "outdoor",
+    description:
+      "Viperade makes EDC gear — tactical pouches, leather sheaths, multitools and organizers for everyday carry.",
+    website: "https://www.viperade.com",
+  },
+  {
+    id: "21",
+    name: "Nikola Toy",
+    slug: "nikola-toy",
+    logo: "/images/stores/nikola-toy.png",
+    category: "kids",
+    description:
+      "Nikola Toy makes model kits and collectibles — engine replicas, DIY builds and licensed action figures.",
+    website: "https://nikolatoy.com",
+  },
+  {
+    id: "22",
+    name: "Redodo Power",
+    slug: "redodo-power",
+    logo: "/images/stores/redodo-power.png",
+    category: "electronics",
+    description:
+      "Redodo Power makes LiFePO4 lithium batteries for RV, marine and solar power setups.",
+    website: "https://www.redodopower.com",
+  },
+  {
+    id: "23",
+    name: "Pecute",
+    slug: "pecute",
+    logo: "/images/stores/pecute.png",
+    category: "pet",
+    description:
+      "Pecute makes pet carriers, travel bags, leashes and training gear for cats and dogs.",
+    website: "https://pecute.net",
+  },
+  {
+    id: "24",
+    name: "Mecpow",
+    slug: "mecpow",
+    logo: "/images/stores/mecpow.png",
+    category: "tools",
+    description:
+      "Mecpow makes laser engraving and welding machines, plus 3D printing accessories.",
+    website: "https://mecpow.com",
+  },
+  {
+    id: "25",
+    name: "FinBike",
+    slug: "finbike",
+    logo: "/images/stores/finbike.png",
+    category: "outdoor",
+    description:
+      "FinBike makes electric bikes and scooters for urban commuting and recreational riding.",
+    website: "https://www.finbike.com",
+  },
+  {
+    id: "26",
+    name: "Autel",
+    slug: "autel",
+    logo: "/images/stores/autel.png",
+    category: "automotive",
+    description:
+      "Autel makes automotive diagnostic scanners, key programming tools and TPMS equipment.",
+    website: "https://store.autel.com",
+  },
+  {
+    id: "27",
+    name: "Metalkitor",
+    slug: "metalkitor",
+    logo: "/images/stores/metalkitor.png",
+    category: "kids",
+    description:
+      "Metalkitor makes 3D metal puzzle model kits — animals, dragons and steampunk builds for hobbyists.",
+    website: "https://metalkitor.com",
+  },
+  {
+    id: "28",
+    name: "RTRhobby",
+    slug: "trhobby",
+    logo: "/images/stores/trhobby.png",
+    category: "outdoor",
+    description:
+      "RTRhobby makes RC helicopters, remote-controlled aircraft and flight simulator cockpit gear.",
+    website: "https://rtrhobby.com",
+  },
+  {
+    id: "29",
+    name: "Exoton Audio",
+    slug: "exotonaudio",
+    logo: "/images/stores/exotonaudio.png",
+    category: "electronics",
+    description:
+      "Exoton Audio makes PA systems, DJ speakers and portable party sound equipment.",
+    website: "https://exotonaudio.com",
+  },
+  {
+    id: "30",
+    name: "Saguaro",
+    slug: "saguaro",
+    logo: "/images/stores/saguaro.png",
+    category: "fashion",
+    description:
+      "Saguaro makes barefoot, zero-drop shoes for natural movement in everyday wear and training.",
+    website: "https://www.saguaro.com",
+  },
+  {
+    id: "31",
+    name: "Ofcasa",
+    slug: "ofcasa",
+    logo: "/images/stores/ofcasa.png",
+    category: "home-garden",
+    description:
+      "Ofcasa makes dining chairs, bar stools and tables in linen, boucle and faux leather finishes.",
+    website: "https://ofcasafurniture.com",
+  },
+  {
+    id: "32",
+    name: "CarplayMMB",
+    slug: "carplaymmb",
+    logo: "/images/stores/carplaymmb.png",
+    category: "automotive",
+    description:
+      "CarplayMMB makes wireless CarPlay and Android Auto AI Box adapters for upgrading car infotainment.",
+    website: "https://carplaymmb.com",
+  },
+  {
+    id: "33",
+    name: "7artisans",
+    slug: "7artisans",
+    logo: "/images/stores/7artisans.png",
+    category: "electronics",
+    description:
+      "7artisans makes manual focus and cine camera lenses for photographers and videographers.",
+    website: "https://7artisans.store",
+  },
+  {
+    id: "34",
+    name: "Ablyea",
+    slug: "ablyea",
+    logo: "/images/stores/ablyea.png",
+    category: "home-garden",
+    description:
+      "Ablyea makes hybrid mattresses and modular sofas made without fiberglass or harmful chemicals.",
+    website: "https://ablyea.com",
+  },
+  {
+    id: "35",
+    name: "Home Cabinets",
+    slug: "homecabinets",
+    logo: "/images/stores/homecabinets.png",
+    category: "home-garden",
+    description:
+      "Home Cabinets makes ready-to-assemble kitchen and storage cabinets for home renovation.",
+    website: "https://homecabinets.com",
+  },
 ];
