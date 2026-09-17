@@ -282,19 +282,30 @@ là đủ, không cần set gì trên server.
 ### 8.3. Đưa `out/` lên đúng thư mục web của domain
 
 Dùng lại đúng workflow **Git™ Version Control** trong cPanel đã thiết lập
-trước đó (clone repo về, vd `~/website-coupon`), rồi chọn 1 trong 2 cách để
-`out/` trở thành thư mục web thực sự của domain:
+trước đó — repo nằm ở `~/repositories/website-coupon` (xem đúng đường dẫn
+thật ở tab "Basic Information" của repo, mục "Repository Path"). Có 3 cách
+để `out/` trở thành thư mục web thực sự của domain:
 
-**Cách 1 — Deploy tự động bằng `.cpanel.yml` (khuyến nghị):** file
-`.cpanel.yml` ở gốc repo đã cấu hình sẵn để copy `out/*` vào `public_html`
-mỗi khi bạn bấm nút **"Deploy HEAD Commit"** trong Git Version Control.
-Chỉ cần sửa `USERNAME` trong file này thành đúng username cPanel của bạn
-(commit + push lại), sau đó `git pull` xong bấm Deploy là xong — không cần
-thao tác gì thêm.
+**Cách 1 — Nút "Deploy HEAD Commit" (Git Version Control → tab "Pull or
+Deploy"):** `.cpanel.yml` ở gốc repo đã cấu hình sẵn để copy `out/*` vào
+`public_html` mỗi khi bấm nút này. **Lưu ý:** nút này chỉ bấm được khi
+`git status` sạch hoàn toàn (không có cả file chưa track) — nếu báo "The
+system cannot deploy... uncommitted changes", vào Terminal `cd` vào repo,
+chạy `git status` xem vướng file nào rồi xoá/dọn đi.
 
-**Cách 2 — Đổi Document Root:** trong cPanel → **Domains**, sửa Document
-Root của `savemorewithcoupons.com` trỏ thẳng vào `~/website-coupon/out`
-(áp dụng được nếu domain đó không phải domain chính của tài khoản).
+**Cách 2 — Copy thủ công qua Terminal (dùng khi nút ở Cách 1 bị treo ở
+trạng thái "queued" mãi không xong — đã gặp thực tế, không phải lỗi thao
+tác, cứ dùng cách này khi gặp lại):**
+
+```bash
+cp -R ~/repositories/website-coupon/out/. ~/public_html/
+```
+
+**Cách 3 — Đổi Document Root:** trong cPanel → **Domains**, sửa Document
+Root của `savemorewithcoupons.com` trỏ thẳng vào
+`~/repositories/website-coupon/out` (chỉ áp dụng được nếu domain đó không
+phải domain chính của tài khoản — domain chính luôn cố định là
+`public_html`).
 
 ### 8.4. Cấu hình SSL
 
@@ -312,18 +323,17 @@ npm run build        # chạy ở máy dev, tạo lại out/
 git add -A && git commit -m "Update coupons" && git push
 ```
 
-Trên server (cPanel Terminal hoặc nút Deploy của Git Version Control):
+Trên server (cPanel Terminal):
 
 ```bash
-cd ~/website-coupon
+cd ~/repositories/website-coupon
 git checkout -- .
 git pull origin main
 ```
 
-Nếu dùng Cách 1 ở mục 8.3, bấm **"Deploy HEAD Commit"** để copy `out/` mới
-vào `public_html`. Nếu dùng Cách 2 (Document Root trỏ thẳng `out/`), `git
-pull` xong là đã lên production ngay — **không cần restart gì cả**, không
-có process nào để restart.
+Rồi đưa `out/` mới lên `public_html` bằng 1 trong 3 cách ở mục 8.3 (Cách 2
+— lệnh `cp` thủ công — là cách chắc chắn chạy được ngay, không cần chờ gì
+cả). **Không cần restart gì cả**, không có process nào để restart.
 
 ---
 
