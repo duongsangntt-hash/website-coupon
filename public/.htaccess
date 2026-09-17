@@ -1,0 +1,20 @@
+# Static export of a Next.js app (output: "export"). Pages are written as
+# flat <route>.html files (not <route>/index.html), so extensionless URLs
+# like /about or /stores/aoocci need an explicit rewrite to find them —
+# kept explicit (not Options +MultiViews) so it can't accidentally match
+# the sibling <route>.txt flight-data files Next also exports.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.*)$ $1.html [L]
+</IfModule>
+
+# The dynamically generated OG image has no file extension; force the
+# correct Content-Type so social-media link previews render it.
+<Files "opengraph-image">
+  ForceType image/png
+</Files>
+
+ErrorDocument 404 /404.html

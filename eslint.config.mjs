@@ -12,15 +12,7 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [".next/**", "node_modules/**", "next-env.d.ts"],
-  },
-  {
-    // Plain CommonJS Node entry point for cPanel/Passenger — not part of
-    // the TypeScript app, must stay require()-based.
-    files: ["server.js"],
-    rules: {
-      "@typescript-eslint/no-require-imports": "off",
-    },
+    ignores: [".next/**", "out/**", "node_modules/**", "next-env.d.ts"],
   },
 ];
 

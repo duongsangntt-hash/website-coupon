@@ -4,9 +4,10 @@
 tổng hợp coupon, mã giảm giá, promo code và deals từ nhiều shop online, phục
 vụ affiliate marketing. Toàn bộ dữ liệu (store, coupon, category, blog) nằm
 trong các file TypeScript ở thư mục `/data`, **không sử dụng database,
-backend API, CMS hay dịch vụ cloud nào**. Website được build tĩnh (SSG) bằng
-Next.js App Router và có thể chạy trên bất kỳ hosting nào hỗ trợ Node.js,
-bao gồm AZDIGI.
+backend API, CMS hay dịch vụ cloud nào**. Website được build hoàn toàn tĩnh
+(`next build` với `output: "export"`) ra file HTML/CSS/JS thuần túy — chạy
+được trên **bất kỳ shared hosting Apache thông thường nào**, không cần
+Node.js, không cần "Setup Node.js App".
 
 ## Tech stack
 
@@ -19,14 +20,11 @@ bao gồm AZDIGI.
 
 ## 0. Checklist trước khi deploy thật
 
-- [ ] **Hosting hỗ trợ Node.js** — không phải mọi gói shared hosting đều có.
-  Ở AZDIGI, tính năng "Setup Node.js App" (cPanel) có từ tier **Pro Hosting /
-  Pro Platinum** trở lên. Xác nhận với sale/support trước khi mua nếu không
-  chắc gói đang xem có tính năng này không.
-- [ ] **RAM tối thiểu ~1GB** để chạy `npm run build` trên server không bị
-  out-of-memory (gói phổ thông 2GB RAM trở lên là dư dùng cho site này).
+- [ ] **Hosting** — chỉ cần shared hosting Apache thông thường (gói rẻ nhất
+  của AZDIGI cũng đủ), vì site build ra file tĩnh, không cần Node.js chạy
+  trên server. Không cần tier có "Setup Node.js App".
 - [ ] **Domain trỏ đúng** và **bật SSL** (Let's Encrypt) sau khi domain đã
-  resolve — xem mục 8.5.
+  resolve — xem mục 8.4.
 - [ ] **Set up hộp mail thật** cho địa chỉ khai báo ở `SITE_EMAIL` trong
   `lib/site.ts` (mặc định `support@savemorewithcoupons.com`) — nút liên hệ,
   form contact và tất cả trang pháp lý đều trỏ mailto tới địa chỉ này. Nếu
@@ -58,10 +56,15 @@ Mở [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npm run build
-npm run start
 ```
 
-Mặc định server chạy ở cổng `3000`. Có thể đổi cổng: `PORT=4000 npm run start`.
+Lệnh này xuất ra thư mục `out/` — toàn bộ trang dưới dạng HTML/CSS/JS tĩnh,
+không cần Node.js để chạy. Xem thử ở máy local bằng bất kỳ static server
+nào, ví dụ:
+
+```bash
+npx serve out
+```
 
 ## 4. Kiểm tra code (lint)
 
@@ -241,124 +244,86 @@ lỗi). Khi cần bật tracking:
 
 ## 8. Deploy lên AZDIGI
 
-AZDIGI hỗ trợ hosting Node.js (qua DirectAdmin/cPanel "Setup Node.js App",
-từ tier **Pro Hosting / Pro Platinum** trở lên, hoặc VPS). Các bước dưới đây
-áp dụng cho cả hai trường hợp. Tham khảo thêm hướng dẫn chính thức của
-AZDIGI: [Cài đặt Next.js trên Hosting cPanel](https://azdigi.com/blog/huong-dan/huong-dan-cai-dat-next-js-tren-hosting-cpanel).
+Site build ra file **tĩnh hoàn toàn** (`output: "export"` trong
+`next.config.ts`) — không cần Node.js, không cần "Setup Node.js App",
+không có process nào chạy thường trực trên server. Bất kỳ gói shared
+hosting Apache nào của AZDIGI cũng chạy được.
 
-### 8.1. Upload project
+### 8.1. Build & commit output tĩnh
 
-- Nén toàn bộ thư mục project (trừ `node_modules` và `.next`, hai thư mục
-  này sẽ được tạo lại trên server) và upload lên hosting, **hoặc** dùng
-  Git/SFTP để đưa code lên thư mục gốc của website (ví dụ
-  `/home/USERNAME/domains/yourdomain.com/`).
+**Luôn build ở máy dev, không build trên server.** Lý do: shared hosting
+cPanel (CloudLinux LVE) giới hạn số tiến trình một tài khoản được tạo, mà
+`next build` cần mở worker phụ để build song song nên hay lỗi (`spawn
+EAGAIN`, `cagefs_enter: Unable to fork`...) trên loại hosting này. Vì vậy
+thư mục `out/` (kết quả build tĩnh) được **commit thẳng vào Git** — xem
+`.gitignore`, `/out/` không bị loại trừ như `.next/`. Server không bao giờ
+phải tự chạy `next build`.
 
-### 8.2. Cấu hình domain / biến môi trường
+```bash
+npm run build              # tạo lại out/
+git add -A && git commit -m "..."
+git push
+```
 
-Domain của site là `savemorewithcoupons.com`, đã được set làm mặc định
-trong `lib/site.ts` (`SITE_URL`). Nếu deploy lên domain/subdomain khác (vd:
-môi trường staging), tạo file `.env` (hoặc cấu hình biến môi trường trong
-panel Node.js App của AZDIGI) để override:
+### 8.2. Cấu hình domain
+
+Domain của site là `savemorewithcoupons.com`, đã set làm mặc định trong
+`lib/site.ts` (`SITE_URL`). Nếu deploy lên domain/subdomain khác (staging),
+tạo file `.env.local` trước khi build:
 
 ```
 NEXT_PUBLIC_SITE_URL=https://savemorewithcoupons.com
 ```
 
-Biến này dùng để build canonical URL, Open Graph và sitemap — chỉ cần set
-khi domain thực tế khác với mặc định trong code.
+Biến này dùng để build canonical URL, Open Graph và sitemap ngay lúc
+`npm run build` — vì giờ build luôn ở máy dev, set trong `.env.local` local
+là đủ, không cần set gì trên server.
 
-### 8.3. Cài đặt trên server (cPanel "Setup Node.js App")
+### 8.3. Đưa `out/` lên đúng thư mục web của domain
 
-cPanel chạy Node.js qua Phusion Passenger — **không** gọi `npm run start`
-trực tiếp, mà chạy thẳng 1 file JS làm entry point. Vì vậy project có sẵn
-file `server.js` ở thư mục gốc, dùng Next.js custom server API để mở HTTP
-server đúng theo cách Passenger cần.
+Dùng lại đúng workflow **Git™ Version Control** trong cPanel đã thiết lập
+trước đó (clone repo về, vd `~/website-coupon`), rồi chọn 1 trong 2 cách để
+`out/` trở thành thư mục web thực sự của domain:
 
-**Quan trọng: KHÔNG chạy `npm run build` trên server.** Hosting shared
-cPanel (CloudLinux LVE) giới hạn số tiến trình/luồng một tài khoản được tạo,
-trong khi `next build` cần mở worker phụ để build song song — dù thử cấu
-hình `cpus: 1`, tắt `webpackBuildWorker`, hay chuyển sang chế độ thread, đều
-vẫn thất bại (`spawn EAGAIN` / `kill EPERM` / lỗi nội bộ Next.js) trên loại
-hosting này. Giải pháp: **build sẵn ở máy dev, commit luôn thư mục `.next`
-vào Git** (xem `.gitignore` — chỉ `.next/cache` bị loại vì đó là cache tạm,
-không cần để chạy). Server chỉ cần `git pull` là có sẵn bản build, không
-phải tự build.
+**Cách 1 — Deploy tự động bằng `.cpanel.yml` (khuyến nghị):** file
+`.cpanel.yml` ở gốc repo đã cấu hình sẵn để copy `out/*` vào `public_html`
+mỗi khi bạn bấm nút **"Deploy HEAD Commit"** trong Git Version Control.
+Chỉ cần sửa `USERNAME` trong file này thành đúng username cPanel của bạn
+(commit + push lại), sau đó `git pull` xong bấm Deploy là xong — không cần
+thao tác gì thêm.
 
-Trong "Setup Node.js App" → "Create Application", điền đúng như sau:
+**Cách 2 — Đổi Document Root:** trong cPanel → **Domains**, sửa Document
+Root của `savemorewithcoupons.com` trỏ thẳng vào `~/website-coupon/out`
+(áp dụng được nếu domain đó không phải domain chính của tài khoản).
 
-| Trường | Giá trị |
-|---|---|
-| Node.js version | **20.x** trở lên (không chọn bản mặc định 10.x — Next.js yêu cầu tối thiểu Node 18.18) |
-| Application mode | **Production** |
-| Application root | thư mục đã clone code vào (bước 8.1), vd: `website-coupon` |
-| Application URL | `savemorewithcoupons.com` |
-| Application startup file | `server.js` |
+### 8.4. Cấu hình SSL
 
-Sau khi bấm **Create**, panel sẽ cấp cho bạn lệnh "Enter to the virtual
-environment" — copy lệnh đó chạy trong Terminal (cPanel) tại đúng thư mục
-Application Root, rồi chạy:
+Bật **SSL miễn phí (Let's Encrypt)** trong mục SSL/TLS của domain trên
+AZDIGI, sau đó bật "Force HTTPS" — làm một lần, không liên quan gì đến việc
+deploy code nên không cần lặp lại sau này.
 
-```bash
-npm install
-```
-
-(Chỉ cần `npm install` để có `node_modules` lúc chạy — **không** chạy
-`npm run build`, vì `.next` đã có sẵn từ Git.) Xong quay lại trang Node.js
-App trên panel, bấm **RESTART**.
-
-Nếu hosting của bạn *không* bị giới hạn tiến trình kiểu này (VPS riêng,
-hoặc CloudLinux LVE rộng rãi hơn), vẫn có thể build trực tiếp trên server
-như bình thường bằng `npm run build` — cấu hình `experimental.cpus: 1` v.v.
-trong `next.config.ts` chỉ khiến build chậm hơn chứ không gây lỗi gì trên
-môi trường không giới hạn.
-
-### 8.4. Chạy thường trực (process manager)
-
-Nếu bạn có SSH và muốn tự quản lý process (khuyến nghị dùng PM2 để app tự
-khởi động lại khi crash hoặc khi reboot server):
-
-```bash
-npm install -g pm2
-pm2 start npm --name "save-more-with-coupons" -- run start
-pm2 save
-pm2 startup
-```
-
-Nếu dùng panel "Setup Node.js App" có sẵn của AZDIGI, panel sẽ tự quản lý
-process này giúp bạn, không cần PM2.
-
-### 8.5. Cấu hình domain & SSL
-
-1. Trỏ domain (hoặc subdomain) về thư mục Application Root ở bước 8.3 trong
-   phần quản lý domain của AZDIGI.
-2. Trong panel Node.js App, đảm bảo cổng nội bộ (thường AZDIGI tự cấp qua
-   biến `PORT`) được proxy đúng ra domain — panel AZDIGI thường tự cấu hình
-   reverse proxy này khi bạn bấm "Create Application".
-3. Bật **SSL miễn phí (Let's Encrypt)** trong mục SSL/TLS của domain trên
-   AZDIGI, sau đó bật "Force HTTPS".
-4. Sau khi domain hoạt động, cập nhật lại `NEXT_PUBLIC_SITE_URL` (mục 8.2)
-   đúng với domain HTTPS thật, build lại (`npm run build`) rồi restart app.
-
-### 8.6. Cập nhật sau khi sửa coupon/store
+### 8.5. Cập nhật sau khi sửa coupon/store
 
 Vì dữ liệu nằm trong file TypeScript (`/data`) nên **mỗi lần sửa coupon/store
-cần build lại rồi mới thấy thay đổi trên production**. Theo lý do ở mục 8.3,
-build được thực hiện **ở máy dev** (không phải trên server):
+cần build lại rồi mới thấy thay đổi trên production**:
 
 ```bash
-npm run build        # chạy ở máy dev, tạo lại .next/
+npm run build        # chạy ở máy dev, tạo lại out/
 git add -A && git commit -m "Update coupons" && git push
 ```
 
-Sau đó trên server:
+Trên server (cPanel Terminal hoặc nút Deploy của Git Version Control):
 
 ```bash
+cd ~/website-coupon
+git checkout -- .
 git pull origin main
 ```
 
-rồi restart app trong panel AZDIGI (hoặc `pm2 restart save-more-with-coupons`
-nếu dùng VPS + PM2). Không cần chạy `npm install` lại trừ khi
-`package.json` có thay đổi, và không cần `npm run build` trên server.
+Nếu dùng Cách 1 ở mục 8.3, bấm **"Deploy HEAD Commit"** để copy `out/` mới
+vào `public_html`. Nếu dùng Cách 2 (Document Root trỏ thẳng `out/`), `git
+pull` xong là đã lên production ngay — **không cần restart gì cả**, không
+có process nào để restart.
 
 ---
 
