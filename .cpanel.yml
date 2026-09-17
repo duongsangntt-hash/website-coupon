@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/USERNAME/public_html/
+    - export DEPLOYPATH=/home/dqlzsyrl/public_html/
     - /bin/cp -R $REPOPATH/out/. $DEPLOYPATH
